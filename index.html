@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Expense Tracker Pro - A premium modern expense tracking application for managing your income and expenses professionally.">
+    <meta name="keywords" content="expense tracker, income tracker, budget, finance, money management">
+    <meta name="theme-color" content="#2563EB">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="Expense Tracker Pro">
+    <meta property="og:description" content="Track your income and expenses with ease. A premium modern FinTech application.">
+    <meta property="og:type" content="website">
+    
+    <title>Expense Tracker Pro - Personal Finance Manager</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'> rect fill='%232563EB' width='100' height='100'/><text x='50' y='65' font-size='60' font-weight='bold' fill='white' text-anchor='middle'>₹</text></svg>">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="loading-spinner">
+        <div class="spinner"></div>
+        <p>Loading Expense Tracker Pro...</p>
+    </div>
+
+    <!-- Main Container -->
+    <div id="appContainer" class="app-container" style="display: none;">
+        <!-- Header/Navbar -->
+        <header class="navbar">
+            <div class="navbar-container">
+                <div class="navbar-brand">
+                    <div class="logo">₹</div>
+                    <div class="brand-info">
+                        <h1 class="brand-title">Expense Tracker Pro</h1>
+                        <p class="brand-subtitle">Manage your money smarter.</p>
+                    </div>
+                </div>
+
+                <div class="navbar-center">
+                    <div class="datetime-display">
+                        <span id="currentDate" class="date-text">--</span>
+                        <span id="currentTime" class="time-text">--:--</span>
+                    </div>
+                </div>
+
+                <div class="navbar-actions">
+                    <button id="darkModeToggle" class="dark-mode-btn" aria-label="Toggle dark mode" title="Toggle Dark Mode">
+                        <span class="icon">☀️</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h2 class="hero-title">Personal Finance Manager</h2>
+                <p class="hero-subtitle">Track your income and expenses with ease.</p>
+                <button class="btn btn-primary btn-lg" id="heroCtaBtn">
+                    <span>+ Add Transaction</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Summary Cards Section -->
+            <section class="summary-cards-section">
+                <div class="summary-cards">
+                    <!-- Total Income Card -->
+                    <div class="summary-card income-card">
+                        <div class="card-icon">📈</div>
+                        <div class="card-content">
+                            <p class="card-label">Total Income</p>
+                            <p class="card-amount" id="totalIncomeDisplay">₹0.00</p>
+                        </div>
+                    </div>
+
+                    <!-- Total Expense Card -->
+                    <div class="summary-card expense-card">
+                        <div class="card-icon">📉</div>
+                        <div class="card-content">
+                            <p class="card-label">Total Expense</p>
+                            <p class="card-amount" id="totalExpenseDisplay">₹0.00</p>
+                        </div>
+                    </div>
+
+                    <!-- Current Balance Card -->
+                    <div class="summary-card balance-card">
+                        <div class="card-icon">💰</div>
+                        <div class="card-content">
+                            <p class="card-label">Current Balance</p>
+                            <p class="card-amount" id="currentBalanceDisplay">₹0.00</p>
+                        </div>
+                    </div>
+
+                    <!-- Total Transactions Card -->
+                    <div class="summary-card transactions-card">
+                        <div class="card-icon">📊</div>
+                        <div class="card-content">
+                            <p class="card-label">Total Transactions</p>
+                            <p class="card-amount" id="totalTransactionsDisplay">0</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Transaction Form Section -->
+            <section class="form-section">
+                <div class="form-card">
+                    <h3 class="form-title">Add New Transaction</h3>
+                    
+                    <form id="transactionForm" class="transaction-form">
+                        <!-- Transaction Type -->
+                        <div class="form-group">
+                            <label for="transactionType" class="form-label">Transaction Type <span class="required">*</span></label>
+                            <select id="transactionType" class="form-select" required>
+                                <option value="">Select Type</option>
+                                <option value="Income">Income</option>
+                                <option value="Expense">Expense</option>
+                            </select>
+                            <span class="error-message" id="typeError"></span>
+                        </div>
+
+                        <!-- Amount -->
+                        <div class="form-group">
+                            <label for="amount" class="form-label">Amount <span class="required">*</span></label>
+                            <div class="input-with-prefix">
+                                <span class="input-prefix">₹</span>
+                                <input type="number" id="amount" class="form-input" placeholder="0.00" min="0.01" step="0.01" required>
+                            </div>
+                            <span class="error-message" id="amountError"></span>
+                        </div>
+
+                        <!-- Title -->
+                        <div class="form-group">
+                            <label for="title" class="form-label">Transaction Title <span class="required">*</span></label>
+                            <input type="text" id="title" class="form-input" placeholder="e.g., Grocery Shopping" maxlength="60" required>
+                            <span class="char-count"><span id="titleCount">0</span>/60</span>
+                            <span class="error-message" id="titleError"></span>
+                        </div>
+
+                        <!-- Category -->
+                        <div class="form-group">
+                            <label for="category" class="form-label">Category <span class="required">*</span></label>
+                            <select id="category" class="form-select" required>
+                                <option value="">Select Category</option>
+                            </select>
+                            <span class="error-message" id="categoryError"></span>
+                        </div>
+
+                        <!-- Date -->
+                        <div class="form-group">
+                            <label for="date" class="form-label">Date <span class="required">*</span></label>
+                            <input type="date" id="date" class="form-input"  required>
+                            <span class="error-message" id="dateError"></span>
+                        </div>
+
+                        <!-- Notes -->
+                        <div class="form-group">
+                            <label for="notes" class="form-label">Notes (Optional)</label>
+                            <textarea id="notes" class="form-textarea" placeholder="Add any notes..." maxlength="250"></textarea>
+                            <span class="char-count"><span id="notesCount">0</span>/250</span>
+                        </div>
+
+                        <!-- Form Buttons -->
+                        <div class="form-buttons">
+                            <button type="submit" class="btn btn-primary" id="saveBtn">Save Transaction</button>
+                            <button type="reset" class="btn btn-secondary">Reset</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Filters and Search Section -->
+            <section class="filters-section">
+                <div class="filters-container">
+                    <!-- Search Bar -->
+                    <div class="search-box">
+                        <input type="text" id="searchInput" class="search-input" placeholder="Search by title, category, amount, date or notes...">
+                        <span class="search-icon">🔍</span>
+                    </div>
+
+                    <!-- Type Filter -->
+                    <div class="type-filter">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="Income">Income</button>
+                        <button class="filter-btn" data-filter="Expense">Expense</button>
+                    </div>
+
+                    <!-- Category Filter -->
+                    <div class="category-filter">
+                        <select id="categoryFilter" class="form-select">
+                            <option value="">All Categories</option>
+                        </select>
+                    </div>
+
+                    <!-- Sort Options -->
+                    <div class="sort-filter">
+                        <select id="sortOptions" class="form-select">
+                            <option value="newest">Newest First</option>
+                            <option value="oldest">Oldest First</option>
+                            <option value="highest">Highest Amount</option>
+                            <option value="lowest">Lowest Amount</option>
+                            <option value="alphabetical">Alphabetical</option>
+                        </select>
+                    </div>
+
+                    <!-- Clear Filters Button -->
+                    <button id="clearFiltersBtn" class="btn btn-outline btn-sm">Clear All</button>
+                </div>
+            </section>
+
+            <!-- Statistics Section -->
+            <section class="statistics-section">
+                <div class="stats-grid">
+                    <!-- Monthly Overview -->
+                    <div class="stat-card">
+                        <h4 class="stat-title">Monthly Overview</h4>
+                        <div class="stat-content">
+                            <div class="stat-item">
+                                <span class="stat-label">Monthly Income</span>
+                                <span class="stat-value" id="monthlyIncome">₹0.00</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Monthly Expense</span>
+                                <span class="stat-value" id="monthlyExpense">₹0.00</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Monthly Savings</span>
+                                <span class="stat-value" id="monthlySavings">₹0.00</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Savings Rate</span>
+                                <span class="stat-value" id="savingsRate">0%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Today's Statistics -->
+                    <div class="stat-card">
+                        <h4 class="stat-title">Today's Statistics</h4>
+                        <div class="stat-content">
+                            <div class="stat-item">
+                                <span class="stat-label">Today's Income</span>
+                                <span class="stat-value" id="todayIncome">₹0.00</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Today's Spending</span>
+                                <span class="stat-value" id="todaySpending">₹0.00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Averages & Highs -->
+                    <div class="stat-card">
+                        <h4 class="stat-title">Insights</h4>
+                        <div class="stat-content">
+                            <div class="stat-item">
+                                <span class="stat-label">Avg. Expense</span>
+                                <span class="stat-value" id="avgExpense">₹0.00</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Avg. Income</span>
+                                <span class="stat-value" id="avgIncome">₹0.00</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Highest Expense</span>
+                                <span class="stat-value" id="highestExpense">₹0.00</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Highest Income</span>
+                                <span class="stat-value" id="highestIncome">₹0.00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Top Categories -->
+                    <div class="stat-card">
+                        <h4 class="stat-title">Top Categories</h4>
+                        <div class="stat-content">
+                            <div class="stat-item">
+                                <span class="stat-label">Top Spending</span>
+                                <span class="stat-value" id="topSpending">-</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Top Income</span>
+                                <span class="stat-value" id="topIncome">-</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Most Frequent</span>
+                                <span class="stat-value" id="mostFrequent">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Recent Activity Section -->
+            <section class="recent-activity-section">
+                <h3 class="section-title">Recent Activity</h3>
+                <div id="recentActivityContainer" class="recent-activity-container">
+                    <div class="empty-state">
+                        <p>No recent transactions</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Transaction History Section -->
+            <section class="transaction-history-section">
+                <h3 class="section-title">Transaction History</h3>
+                
+                <!-- Desktop Table View -->
+                <div id="tableContainer" class="table-container">
+                    <table class="transaction-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Type</th>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                                <th>Notes</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <tr class="empty-row">
+                                <td colspan="8" class="empty-message">No transactions found</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Mobile Cards View -->
+                <div id="cardsContainer" class="cards-container">
+                    <div class="empty-state">
+                        <p>No transactions found</p>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div id="emptyState" class="empty-state-full" style="display: none;">
+                    <div class="empty-illustration">
+                        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="100" cy="100" r="80" fill="none" stroke="currentColor" stroke-width="2" opacity="0.2"/>
+                            <path d="M 70 100 L 90 120 L 130 70" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.3"/>
+                        </svg>
+                    </div>
+                    <h4>No transactions added yet.</h4>
+                    <p>Start tracking your finances by adding your first transaction.</p>
+                    <button class="btn btn-primary" id="emptyStateBtn">Add First Transaction</button>
+                </div>
+            </section>
+
+            <!-- Data Management Section -->
+            <section class="data-management-section">
+                <div class="data-management-card">
+                    <h3 class="section-title">Data Management</h3>
+                    <div class="data-buttons">
+                        <button id="exportBtn" class="btn btn-outline">📥 Export as CSV</button>
+                        <button id="importBtn" class="btn btn-outline">📤 Import CSV</button>
+                        <button id="clearAllBtn" class="btn btn-danger">🗑️ Clear All Data</button>
+                    </div>
+                    <input type="file" id="importFile" accept=".csv" style="display: none;">
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <p class="footer-text">Expense Tracker Pro © <span id="currentYear">2026</span></p>
+                <p class="footer-tech">Built with <strong>HTML5</strong> • <strong>CSS3</strong> • <strong>JavaScript</strong></p>
+                <p class="footer-features">Responsive Design • Local Storage • Real-time Updates</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Modal: Confirmation Dialog -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Confirm Action</h3>
+                <button class="modal-close" aria-label="Close modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="modalMessage">Are you sure?</p>
+            </div>
+            <div class="modal-footer">
+                <button id="modalCancelBtn" class="btn btn-secondary">Cancel</button>
+                <button id="modalConfirmBtn" class="btn btn-danger">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Date Range Filter -->
+ <div class="date-filter">
+     <select id="dateFilter" class="form-select">
+         <option value="all">📅 All Time</option>
+         <option value="today">Today</option>
+         <option value="7days">Last 7 Days</option>
+         <option value="30days">Last 1 Month</option>
+         <option value="90days">Last 3 Months</option>
+         <option value="180days">Last 6 Months</option>
+         <option value="365days">Last 1 Year</option>
+     </select>
+ </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
