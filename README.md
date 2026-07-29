@@ -142,7 +142,7 @@ No installation required.
 
 **Indrajeetsinh Vaghela**
 
-Computer Science & IoT Student
+Computer Science 
 
 ### Connect with Me
 
